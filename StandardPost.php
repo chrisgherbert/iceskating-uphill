@@ -2,7 +2,8 @@
 
 class StandardPost {
 
-	private $wp_post_obj;
+	protected $wp_post_obj;
+	protected $labels;
 
 	////////////
 	// Public //
