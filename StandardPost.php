@@ -163,6 +163,14 @@ class StandardPost {
 		return get_post_meta($this->get_id(), $key, true);
 	}
 
+	/**
+	 * Shorten a string by words. If the original string is already that short,
+	 * just return it.
+	 * @param  string  $string String that needs shortening
+	 * @param  integer $words  The number of words in the string to return
+	 * @param  string  $suffix The string to append to the shortened string
+	 * @return string          Shortened string, followed by suffix.
+	 */
 	protected static function shorten_string_by_words($string, $words = 20, $suffix = '&hellip;'){
 
 		$words_array = explode(' ', $string);
