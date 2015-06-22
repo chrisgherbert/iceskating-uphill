@@ -144,7 +144,7 @@ class StandardPost {
 	protected static function get_image_attachment_url($attachment_id=false, $size='large'){
 
 		if ($attachment_id){
-			$image_array = wp_get_attachment_image_src($attachment_id, $size, true);
+			$image_array = wp_get_attachment_image_src($attachment_id, $size, false);
 			return $image_array[0];
 		}
 
