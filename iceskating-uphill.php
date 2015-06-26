@@ -19,13 +19,13 @@ if (!defined('WPINC')){
 $plugin_path = plugin_dir_path(__FILE__);
 
 if (!class_exists('StandardPost')){
-	require_once($plugin_path . '/classes/StandardPost.php');
+	require_once($plugin_path . 'classes/StandardPost.php');
 }
 
 if (!class_exists('StandardTaxonomyTerm')){
-	require_once($plugin_path . '/classes/StandardTaxonomyTerm.php');
+	require_once($plugin_path . 'classes/StandardTaxonomyTerm.php');
 }
 
 if (!class_exists('StandardQueries')){
-	require_once($plugin_path . '/classes/StandardQueries.php');
+	require_once($plugin_path . 'classes/StandardQueries.php');
 }
