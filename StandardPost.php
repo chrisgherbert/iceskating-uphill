@@ -99,6 +99,10 @@ class StandardPost {
 		return $date;
 	}
 
+	public function get_time($format='g:i A'){
+		return $this->get_date($format);
+	}
+
 	public function get_url(){
 		return get_the_permalink($this->get_id());
 	}
