@@ -51,7 +51,7 @@ class StandardPost {
 	 */
 	public function get_excerpt($length_in_words = 30, $suffix = '&hellip;'){
 
-		if ($this->wp_post_obj->post_excerpt()){
+		if ($this->wp_post_obj->post_excerpt){
 			return apply_filters('the_excerpt', $this->$this->wp_post_obj->post_excerpt());
 		}
 		else if ($this->get_content()){
