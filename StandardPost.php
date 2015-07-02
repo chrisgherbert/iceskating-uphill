@@ -26,7 +26,7 @@ class StandardPost {
 	}
 
 	public function get_post_slug(){
-		return $this->post_obj->post_name;
+		return $this->wp_post_obj->post_name;
 	}
 
 	public function get_content(){
@@ -66,7 +66,7 @@ class StandardPost {
 	 * @return string Post's type
 	 */
 	public function get_post_type(){
-		return $this->post_obj->post_type;
+		return $this->wp_post_obj->post_type;
 	}
 
 	public function get_post_type_labels(){
