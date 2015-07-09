@@ -169,6 +169,18 @@ class StandardPost {
 
 	}
 
+	/**
+	 * Get post's first embedded image URL
+	 * @return string URL of the first image embedded in the post
+	 */
+	public function get_first_content_image_url(){
+
+		$output = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $this->get_content(), $matches);
+		$first_img = $matches[1][0];
+		return $first_img;
+
+	}
+
 	///////////////
 	// Protected //
 	///////////////
