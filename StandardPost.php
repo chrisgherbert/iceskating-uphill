@@ -103,6 +103,40 @@ class StandardPost {
 		return $this->get_date($format);
 	}
 
+	/**
+	 * Get post date in words - "5 days ago"
+	 * @return string Post date in words
+	 */
+	public function get_date_since(){
+
+		$date = $this->get_date();
+
+		if ($date){
+
+			$time = time() - strtotime($date);
+
+			error_log($time);
+
+			$tokens = array (
+				31536000 => 'year',
+				2592000 => 'month',
+				604800 => 'week',
+				86400 => 'day',
+				3600 => 'hour',
+				60 => 'minute',
+				1 => 'second'
+			);
+
+			foreach ($tokens as $unit => $text) {
+				if ($time < $unit) continue;
+				$numberOfUnits = floor($time / $unit);
+				return $numberOfUnits.' '.$text.(($numberOfUnits>1)?'s':'') . ' ago';
+			}
+
+		}
+
+	}
+
 	public function get_url(){
 		return get_the_permalink($this->get_id());
 	}
