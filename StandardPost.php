@@ -151,6 +151,7 @@ class StandardPost {
 		$attachment_id = get_post_thumbnail_id($this->get_id());
 
 		return self::get_image_attachment_url($attachment_id, $size);
+
 	}
 
 	public function get_tags(){
@@ -181,6 +182,10 @@ class StandardPost {
 
 	}
 
+	public function get_meta($key){
+		return get_post_meta($this->get_id(), $key, true);
+	}
+
 	///////////////
 	// Protected //
 	///////////////
@@ -207,10 +212,6 @@ class StandardPost {
 	protected function format_date_string($date_string, $format='f j, Y'){
 		$time = strtotime($date_string);
 		return date($format, $time);
-	}
-
-	protected function get_meta($key){
-		return get_post_meta($this->get_id(), $key, true);
 	}
 
 	/**
