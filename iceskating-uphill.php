@@ -29,3 +29,5 @@ if (!class_exists('StandardTaxonomyTerm')){
 if (!class_exists('StandardQueries')){
 	require_once($plugin_path . 'StandardQueries.php');
 }
+
+do_action('iceskating_uphill_loaded');
