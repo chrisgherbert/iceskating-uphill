@@ -21,6 +21,14 @@ class StandardPost {
 		return $this->wp_post_obj->ID;
 	}
 
+	/**
+	 * Get the post's WP_Post object
+	 * @return WP_Post WordPress post object
+	 */
+	public function get_wp_post_obj(){
+		return $this->wp_post_obj;
+	}
+
 	public function get_title(){
 		return apply_filters('the_title', $this->wp_post_obj->post_title);
 	}
