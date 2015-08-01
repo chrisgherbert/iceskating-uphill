@@ -30,4 +30,6 @@ if (!class_exists('StandardQueries')){
 	require_once($plugin_path . 'StandardQueries.php');
 }
 
-do_action('iceskating_uphill_loaded');
+add_action('after_setup_theme',function(){
+	do_action('iceskating_uphill_loaded');
+});
