@@ -190,8 +190,39 @@ class StandardPost {
 
 	}
 
+	/**
+	 * Get the edit post URL (will only work for users allowed to edit posts)
+	 * @return string URL to edit the post
+	 */
+	public function get_edit_url(){
+		return get_edit_post_link($this->get_id());
+	}
+
+	/**
+	 * Get meta data
+	 * @param  string $key Meta key
+	 * @return string      Meta value
+	 */
 	public function get_meta($key){
 		return get_post_meta($this->get_id(), $key, true);
+	}
+
+	public function get_template_data(){
+
+		$data = array();
+
+		$data['id'] = $this->get_id();
+		$data['title'] = $this->get_title();
+		$data['url'] = $this->get_url();
+		$data['slug'] = $this->get_post_slug();
+		$data['content'] = $this->get_content();
+		$data['post_type'] = $this->get_post_type();
+		$data['date'] = $this->get_date();
+		$data['date_since'] = $this->get_date_since();
+		$data['thumbnail_url'] = $this->get_thumbnail_url();
+
+		return $data;
+
 	}
 
 	///////////////
