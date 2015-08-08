@@ -248,7 +248,7 @@ class StandardPost {
 		return wp_get_attachment_url($attachment_id);
 	}
 
-	protected static function format_date_string($date_string, $format='f j, Y'){
+	protected static function format_date_string($date_string, $format='F j, Y'){
 
 		$time = strtotime($date_string);
 
