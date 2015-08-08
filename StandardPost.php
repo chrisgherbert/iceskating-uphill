@@ -249,8 +249,13 @@ class StandardPost {
 	}
 
 	protected function format_date_string($date_string, $format='f j, Y'){
+
 		$time = strtotime($date_string);
-		return date($format, $time);
+
+		if ($time !== false){
+			return date($format, $time);
+		}
+
 	}
 
 	/**
