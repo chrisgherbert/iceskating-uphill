@@ -27,4 +27,14 @@ class StandardQueries {
 
 	}
 
+	public static function get_post_from_id($post_id){
+
+		$wp_post = get_post($post_id);
+
+		if ($wp_post){
+			return static::get_post($wp_post);
+		}
+
+	}
+
 }

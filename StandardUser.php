@@ -8,33 +8,64 @@ class StandardUser {
 		$this->user_obj = $user;
 	}
 
+	/**
+	 * Get user's WP ID
+	 * @return string WordPress user ID
+	 */
 	public function get_id(){
-		return $this->user_obj->ID;
+		return $this->wp_user_obj->ID;
 	}
 
-	public function get_meta($field){
-		return get_user_meta($this->get_id(), $field, true);
-	}
-
+	/**
+	 * Get email address associated with the user's WP account
+	 * @return string Email address
+	 */
 	public function get_email(){
-		return $this->user_info->user_email;
+		return $this->wp_user_obj->user_email;
 	}
 
+	/**
+	 * Get WP username.
+	 * @return string WordPress user name
+	 */
 	public function get_username(){
-		return $this->user_info->user_login;
+		return $this->wp_user_obj->user_login;
 	}
 
+	/**
+	 * Get date that the user created their WordPress account
+	 * @return string Date
+	 */
 	public function get_registration_date($format = 'c'){
 
-		$raw_date = $this->user_info->user_registered;
-		$time = strtotime($raw_date);
+		$raw_date = $this->wp_user_obj->user_registered;
 
-		if ($time){
+		return self::format_date_string($raw_date, $format);
 
+	}
+
+	/**
+	 * Get value of user's meta data
+	 * @param  string $meta_key The key of the meta data
+	 * @return mixed            The value of the meta data
+	 */
+	public function get_meta($meta_key){
+		return get_user_meta($this->get_id(), $meta_key, true);
+	}
+
+	///////////////
+	// Protected //
+	///////////////
+
+	protected static function format_date_string($date_string, $format='F j, Y'){
+
+		$time = strtotime($date_string);
+
+		if ($time !== false){
 			return date($format, $time);
-
 		}
 
 	}
 
 }
+

@@ -21,6 +21,14 @@ class StandardPost {
 		return $this->wp_post_obj->ID;
 	}
 
+	/**
+	 * Get the post's WP_Post object
+	 * @return WP_Post WordPress post object
+	 */
+	public function get_wp_post_obj(){
+		return $this->wp_post_obj;
+	}
+
 	public function get_title(){
 		return apply_filters('the_title', $this->wp_post_obj->post_title);
 	}
@@ -103,6 +111,40 @@ class StandardPost {
 		return $this->get_date($format);
 	}
 
+	/**
+	 * Get post date in words - "5 days ago"
+	 * @return string Post date in words
+	 */
+	public function get_date_since(){
+
+		$date = $this->get_date();
+
+		if ($date){
+
+			$time = time() - strtotime($date);
+
+			error_log($time);
+
+			$tokens = array (
+				31536000 => 'year',
+				2592000 => 'month',
+				604800 => 'week',
+				86400 => 'day',
+				3600 => 'hour',
+				60 => 'minute',
+				1 => 'second'
+			);
+
+			foreach ($tokens as $unit => $text) {
+				if ($time < $unit) continue;
+				$numberOfUnits = floor($time / $unit);
+				return $numberOfUnits.' '.$text.(($numberOfUnits>1)?'s':'') . ' ago';
+			}
+
+		}
+
+	}
+
 	public function get_url(){
 		return get_the_permalink($this->get_id());
 	}
@@ -117,6 +159,7 @@ class StandardPost {
 		$attachment_id = get_post_thumbnail_id($this->get_id());
 
 		return self::get_image_attachment_url($attachment_id, $size);
+
 	}
 
 	public function get_tags(){
@@ -132,6 +175,53 @@ class StandardPost {
 		if ($tags){
 			return $tags;
 		}
+
+	}
+
+	/**
+	 * Get post's first embedded image URL
+	 * @return string URL of the first image embedded in the post
+	 */
+	public function get_first_content_image_url(){
+
+		$output = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $this->get_content(), $matches);
+		$first_img = $matches[1][0];
+		return $first_img;
+
+	}
+
+	/**
+	 * Get the edit post URL (will only work for users allowed to edit posts)
+	 * @return string URL to edit the post
+	 */
+	public function get_edit_url(){
+		return get_edit_post_link($this->get_id());
+	}
+
+	/**
+	 * Get meta data
+	 * @param  string $key Meta key
+	 * @return string      Meta value
+	 */
+	public function get_meta($key){
+		return get_post_meta($this->get_id(), $key, true);
+	}
+
+	public function get_template_data(){
+
+		$data = array();
+
+		$data['id'] = $this->get_id();
+		$data['title'] = $this->get_title();
+		$data['url'] = $this->get_url();
+		$data['slug'] = $this->get_post_slug();
+		$data['content'] = $this->get_content();
+		$data['post_type'] = $this->get_post_type();
+		$data['date'] = $this->get_date();
+		$data['date_since'] = $this->get_date_since();
+		$data['thumbnail_url'] = $this->get_thumbnail_url();
+
+		return $data;
 
 	}
 
@@ -158,13 +248,14 @@ class StandardPost {
 		return wp_get_attachment_url($attachment_id);
 	}
 
-	protected function format_date_string($date_string, $format='f j, Y'){
-		$time = strtotime($date_string);
-		return date($format, $time);
-	}
+	protected static function format_date_string($date_string, $format='F j, Y'){
 
-	protected function get_meta($key){
-		return get_post_meta($this->get_id(), $key, true);
+		$time = strtotime($date_string);
+
+		if ($time !== false){
+			return date($format, $time);
+		}
+
 	}
 
 	/**
