@@ -53,6 +53,10 @@ class StandardUser {
 		return get_user_meta($this->get_id(), $meta_key, true);
 	}
 
+	public function set_meta($meta_key, $meta_value){
+		update_user_meta($this->get_id(), $meta_key, $meta_value);
+	}
+
 	///////////////
 	// Protected //
 	///////////////
