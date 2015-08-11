@@ -185,8 +185,11 @@ class StandardPost {
 	public function get_first_content_image_url(){
 
 		$output = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $this->get_content(), $matches);
-		$first_img = $matches[1][0];
-		return $first_img;
+
+		if ($matches && $matches[1] && $matches[1][0]){
+			$first_img = $matches[1][0];
+			return $first_img;
+		}
 
 	}
 
