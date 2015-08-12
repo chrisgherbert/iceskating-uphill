@@ -19,6 +19,7 @@ if (!defined('WPINC')){
 $iceskating_uphill_plugin_path = plugin_dir_path(__FILE__);
 
 $iceskating_uphill_classes = array(
+	'IceskatingUphillBase',
 	'StandardPost',
 	'StandardTaxonomyTerm',
 	'StandardQueries',

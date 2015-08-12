@@ -1,6 +1,6 @@
 <?php
 
-class StandardUser {
+class StandardUser extends IceskatingUphillBase {
 
 	protected $user_obj;
 
@@ -51,20 +51,6 @@ class StandardUser {
 	 */
 	public function get_meta($meta_key){
 		return get_user_meta($this->get_id(), $meta_key, true);
-	}
-
-	///////////////
-	// Protected //
-	///////////////
-
-	protected static function format_date_string($date_string, $format='F j, Y'){
-
-		$time = strtotime($date_string);
-
-		if ($time !== false){
-			return date($format, $time);
-		}
-
 	}
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-class StandardTaxonomyTerm {
+class StandardTaxonomyTerm extends IceskatingUphillBase {
 
 	protected $term_obj;
 
