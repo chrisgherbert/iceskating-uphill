@@ -53,5 +53,23 @@ class StandardUser extends IceskatingUphillBase {
 		return get_user_meta($this->get_id(), $meta_key, true);
 	}
 
+	public function set_meta($meta_key, $meta_value){
+		update_user_meta($this->get_id(), $meta_key, $meta_value);
+	}
+
+	///////////////
+	// Protected //
+	///////////////
+
+	protected static function format_date_string($date_string, $format='F j, Y'){
+
+		$time = strtotime($date_string);
+
+		if ($time !== false){
+			return date($format, $time);
+		}
+
+	}
+
 }
 

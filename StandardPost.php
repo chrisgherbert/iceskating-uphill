@@ -60,7 +60,7 @@ class StandardPost extends IceskatingUphillBase {
 	public function get_excerpt($length_in_words = 30, $suffix = '&hellip;'){
 
 		if ($this->wp_post_obj->post_excerpt){
-			return apply_filters('the_excerpt', $this->$this->wp_post_obj->post_excerpt());
+			return apply_filters('the_excerpt', $this->wp_post_obj->post_excerpt);
 		}
 		else if ($this->get_content()){
 			$stripped_content = strip_tags($this->get_content());
@@ -185,8 +185,11 @@ class StandardPost extends IceskatingUphillBase {
 	public function get_first_content_image_url(){
 
 		$output = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $this->get_content(), $matches);
-		$first_img = $matches[1][0];
-		return $first_img;
+
+		if ($matches && $matches[1] && $matches[1][0]){
+			$first_img = $matches[1][0];
+			return $first_img;
+		}
 
 	}
 
