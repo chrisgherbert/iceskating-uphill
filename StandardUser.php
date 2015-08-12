@@ -57,19 +57,5 @@ class StandardUser extends IceskatingUphillBase {
 		update_user_meta($this->get_id(), $meta_key, $meta_value);
 	}
 
-	///////////////
-	// Protected //
-	///////////////
-
-	protected static function format_date_string($date_string, $format='F j, Y'){
-
-		$time = strtotime($date_string);
-
-		if ($time !== false){
-			return date($format, $time);
-		}
-
-	}
-
 }
 
