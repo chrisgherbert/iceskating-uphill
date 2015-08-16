@@ -59,7 +59,8 @@ class StandardPost extends IceskatingUphillBase {
 	 */
 	public function get_excerpt($length_in_words = 30, $suffix = '&hellip;'){
 
-		if ($this->wp_post_obj->post_excerpt){
+		// If the excerpt exists and isn't the same as the content, use it
+		if ($this->wp_post_obj->post_excerpt && $this->wp_post_obj->post_content != $this->wp_post_obj->post_excerpt){
 			return apply_filters('the_excerpt', $this->wp_post_obj->post_excerpt);
 		}
 		else if ($this->get_content()){
