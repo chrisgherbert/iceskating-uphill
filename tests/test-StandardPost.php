@@ -204,14 +204,15 @@ class PostTests extends WP_UnitTestCase {
 	/**
 	 * get_excerpt() should not return a shortened version of the post content 
 	 * when a custom excerpt exists
-	 * @return [type] [description]
+	 * @covers StandardPost::get_excerpt
 	 */
 	function test_get_excerpt_do_not_modify_custom_excerpt(){
 
-		$excerpt_from_wp_post = apply_filters('the_excerpt', $this->custom_excerpt->get_wp_post_obj()->post_excerpt);
+		$excerpt_from_wp_post = $this->custom_excerpt->get_wp_post_obj()->post_excerpt;
+		$filtered_excerpt_from_wp_post = apply_filters('the_excerpt', $excerpt_from_wp_post);
 		$excerpt_from_standard_post = $this->custom_excerpt->get_excerpt(4, 'suffix that should not appear');
 
-		$this->assertEquals($excerpt_from_wp_post, $excerpt_from_standard_post);
+		$this->assertEquals($filtered_excerpt_from_wp_post, $excerpt_from_standard_post);
 
 	}
 
