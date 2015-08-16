@@ -211,6 +211,25 @@ class StandardPost extends IceskatingUphillBase {
 		return get_post_meta($this->get_id(), $key, true);
 	}
 
+	/**
+	 * Set meta date
+	 * @param  string $key   Meta key
+	 * @param  string $value Meta value
+	 * @return bool          True on success
+	 */
+	public function set_meta($key, $value){
+
+		$updated = update_post_meta($this->get_id(), $key, $value);
+
+		if ($updated){
+			return true;
+		}
+		else {
+			return false;
+		}
+
+	}
+
 	public function get_template_data(){
 
 		$data = array();
@@ -250,16 +269,6 @@ class StandardPost extends IceskatingUphillBase {
 
 	protected static function get_file_attachment_url($attachment_id){
 		return wp_get_attachment_url($attachment_id);
-	}
-
-	protected function set_meta($key, $value){
-
-		$updated = update_post_meta($this->get_id(), $key, $value);
-
-		if ($updated){
-			return true;
-		}
-
 	}
 
 }
