@@ -2,10 +2,10 @@
 
 class StandardUser extends IceskatingUphillBase {
 
-	protected $user_obj;
+	protected $wp_user_obj;
 
 	public function __construct(WP_User $user){
-		$this->user_obj = $user;
+		$this->wp_user_obj = $user;
 	}
 
 	/**
