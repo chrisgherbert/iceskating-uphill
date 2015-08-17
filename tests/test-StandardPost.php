@@ -279,7 +279,7 @@ class PostTests extends WP_UnitTestCase {
 	function test_get_post_type_labels_contains_certain_things(){
 
 		$this->markTestIncomplete(
-		  'This test has not been implemented yet.'
+			'This test has not been implemented yet.'
 		);
 
 		$labels = $this->standard_post->get_post_type_labels();
