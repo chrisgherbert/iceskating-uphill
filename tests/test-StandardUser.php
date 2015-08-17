@@ -12,11 +12,41 @@ class UserTests extends WP_UnitTestCase {
 
 	}
 
+	///////////
+	// Tests //
+	///////////
+
 	/**
 	 * @covers StandardUser::__construct()
 	 */
 	function test_instantiation_type(){
 		$this->assertInstanceOf('StandardUser', $this->user);
+	}
+
+	/**
+	 * __construct() should create an error when passed a value that isn't a 
+	 * WP_Post object
+	 * @covers            StandardUser::__construct()
+	 * @expectedException PHPUnit_Framework_Error
+	 */
+	function test_invalid_constructor_parameter_int(){
+		new StandardUser('123');
+	}
+
+	/**
+	 * get_id() should return an integer
+	 * @covers StandardUser::get_id()
+	 */
+	function test_get_id_is_integer(){
+		$this->assertInternalType('int', $this->user->get_id());
+	}
+
+	/**
+	 * get_id() should return a valid user ID
+	 * @covers StandardUser::get_id()
+	 */
+	function test_get_id_returns_valid_user_id(){
+		$this->assertNotEquals(false, get_user_by('id', $this->user->get_id()));
 	}
 
 	/**
@@ -81,6 +111,31 @@ class UserTests extends WP_UnitTestCase {
 	 */
 	function test_get_meta_returns_false_for_nonexistent_meta_key(){
 		$this->assertEquals(false, $this->user->get_meta('this_key_does_not_exist'));
+	}
+
+	/**
+	 * get_registration_date() should return a valid date string
+	 * @covers StandardUser::get_registration_date()
+	 */
+	function test_get_registration_date_is_valid_date(){
+
+		$time = strtotime($this->user->get_registration_date());
+
+		$this->assertNotEquals(false, $time);
+
+	}
+
+	/**
+	 * get_registration_date() should format the date
+	 * @covers StandardUser::get_registration_date()
+	 */
+	function test_get_registration_date_respects_format(){
+
+		$default_format = $this->user->get_registration_date();
+		$custom_format = $this->user->get_registration_date('Y');
+
+		$this->assertNotEquals($default_format, $custom_format);
+
 	}
 
 }
