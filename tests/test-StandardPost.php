@@ -25,6 +25,18 @@ class PostTests extends WP_UnitTestCase {
 		));
 		$this->custom_excerpt = new StandardPost(get_post($post_id));
 
+		// Create post with custom post type
+		$post_id = $this->factory->post->create(array(
+			'post_type' => 'test_unit_post_type'
+		));
+		$this->custom_post_type = new StandardPost(get_post($post_id));
+
+		// Create post with image tags in post content
+		$post_id = $this->factory->post->create(array(
+			'post_content' => 'This is post content. First image: <img src="https://farm6.staticflickr.com/5771/20016320504_3488ddbe3d_b.jpg"> Second Image: <img src="http://cdn.macrumors.com/images-new/logo.png">'
+		));
+		$this->post_with_images_in_content = new StandardPost(get_post($post_id));
+
 	}
 
 	///////////
@@ -41,11 +53,19 @@ class PostTests extends WP_UnitTestCase {
 	/**
 	 * __construct should create an error when passed a value that isn't a 
 	 * WP_Post object
-	 * @covers            StandardPost::__construct
+	 * @covers            StandardPost::__construct()
 	 * @expectedException PHPUnit_Framework_Error
 	 */
 	function test_invalid_constructor_parameter_int(){
 		new StandardPost('123');
+	}
+
+	/**
+	 * get_id() should return an integer
+	 * @covers StandardPost::get_id()
+	 */
+	function test_get_id_return_type(){
+		$this->assertInternalType('int', $this->standard_post->get_id());
 	}
 
 	/**
@@ -213,6 +233,109 @@ class PostTests extends WP_UnitTestCase {
 		$excerpt_from_standard_post = $this->custom_excerpt->get_excerpt(4, 'suffix that should not appear');
 
 		$this->assertEquals($filtered_excerpt_from_wp_post, $excerpt_from_standard_post);
+
+	}
+
+	/**
+	 * get_post_type() should return a string
+	 * @covers StandardPost::get_post_type()
+	 */
+	function test_get_post_type_return_type(){
+		$this->assertInternalType('string', $this->standard_post->get_post_type());
+	}
+
+	/**
+	 * get_post_type() should return a string when the post is a custom post type
+	 * @covers StandardPost::get_post_type()
+	 */
+	function test_get_post_type_cpt_return_type(){
+		$this->assertInternalType('string', $this->custom_post_type->get_post_type());
+	}
+
+	/**
+	 * get_post_type() should return the post's type
+	 * @covers StandardPost::get_post_type()
+	 */
+	function test_get_post_type_is_posts_type(){
+		$this->assertEquals($this->wp_post->post_type, $this->standard_post->get_post_type());
+	}
+
+	/**
+	 * get_post_type() should return the post's type for custom post types
+	 * @covers StandardPost::get_post_type()
+	 */
+	function test_get_post_type_cpt_is_posts_type(){
+		$this->assertEquals($this->custom_post_type->get_wp_post_obj()->post_type, $this->custom_post_type->get_post_type());
+	}
+
+	/**
+	 * get_post_type_labels() should return a stdClass instance
+	 * @covers StandardPost::get_post_type()
+	 */
+	function test_get_post_type_labels_return_type(){
+		$this->assertInstanceOf('stdClass', $this->standard_post->get_post_type_labels());
+	}
+
+	function test_get_post_type_labels_contains_certain_things(){
+
+		$this->markTestIncomplete(
+		  'This test has not been implemented yet.'
+		);
+
+		$labels = $this->standard_post->get_post_type_labels();
+
+		$this->assertEquals(true, isset($labels->name));
+		$this->assertEquals(true, isset($labels->singular_name));
+		$this->assertEquals(true, isset($labels->add_new));
+		$this->assertEquals(true, isset($labels->add_new_item));
+		$this->assertEquals(true, isset($labels->edit_item));
+		$this->assertEquals(true, isset($labels->new_item));
+		$this->assertEquals(true, isset($labels->view_item));
+		$this->assertEquals(true, isset($labels->search_items));
+		$this->assertEquals(true, isset($labels->not_found));
+		$this->assertEquals(true, isset($labels->not_found_in_trash));
+		$this->assertEquals(true, isset($labels->parent_item_colon));
+		$this->assertEquals(true, isset($labels->all_items));
+		$this->assertEquals(true, isset($labels->menu_name));
+		$this->assertEquals(true, isset($labels->name_admin_bar));
+
+	}
+
+	/**
+	 * get_url() should return a valid URL
+	 * @covers StandardPost::get_url()
+	 */
+	function test_get_url_returns_valid_url(){
+
+		$valid_url = filter_var($this->standard_post->get_url(), FILTER_VALIDATE_URL);
+
+		$this->assertNotEquals(false, $valid_url);
+
+	}
+
+	/**
+	 * get_first_content_image_url() should return a valid URL when at least 
+	 * one image is present in the content.
+	 * @covers StandardPost::get_first_content_image_url()
+	 */
+	function test_get_first_content_image_url_returns_valid_url(){
+
+		$image = $this->post_with_images_in_content->get_first_content_image_url();
+
+		$this->assertNotEquals(false, filter_var($image, FILTER_VALIDATE_URL));
+
+	}
+
+	/**
+	 * get_first_content_image_url() returns false when no content images are 
+	 * present
+	 * @covers StandardPost::get_first_content_image_url()
+	 */
+	function test_get_first_content_image_url_returns_false_when_no_image_exists(){
+
+		$image =  $this->standard_post->get_first_content_image_url();
+
+		$this->assertEquals(false, $image);
 
 	}
 
