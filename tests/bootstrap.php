@@ -13,3 +13,15 @@ function _manually_load_plugin() {
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 
 require $_tests_dir . '/includes/bootstrap.php';
+
+// Useful functions
+
+function log_var($var){
+	error_log(print_r($var, true));
+}
+
+function print_var($var){
+	echo '<pre>';
+	print_r($var);
+	echo '</pre>';
+}
