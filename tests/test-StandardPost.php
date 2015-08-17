@@ -339,6 +339,88 @@ class PostTests extends WP_UnitTestCase {
 
 	}
 
+	/**
+	 * get_edit_url() returns a valid URL for a logged in admin user
+	 * @covers StandardPost::get_edit_url()
+	 */
+	function test_get_edit_url_returns_valid_url_for_logged_in_admin_user(){
+
+		// log in admin user
+		wp_set_current_user(1);
+
+		$edit_url = $this->standard_post->get_edit_url();
+
+		$this->assertNotEquals(false, filter_var($edit_url, FILTER_VALIDATE_URL));
+
+		wp_set_current_user(0);
+
+	}
+
+	/**
+	 * get_edit_url() returns false without a logged in user
+	 * @covers StandardPost::get_edit_url()
+	 */
+	function test_get_edit_url_returns_false_for_logged_out_user(){
+
+		$edit_url = $this->standard_post->get_edit_url();
+
+		$this->assertEquals(false, $edit_url);
+
+	}
+
+	/**
+	 * get_edit_url() returns false for user who cannot edit posts
+	 * @covers StandardPost::get_edit_url()
+	 */
+	function test_get_edit_url_returns_false_for_user_who_cannot_edit_posts(){
+
+		// Create user
+		$user_id = $this->factory->user->create();
+
+		// Set user as logged in
+		wp_set_current_user($user_id);
+
+		// Ensure the user cannot edit posts
+		$this->assertEquals(false, current_user_can('edit_posts'));
+
+		$this->assertEquals(false, $this->standard_post->get_edit_url());
+
+		wp_set_current_user(0);
+
+	}
+
+	/**
+	 * get_meta() should properly return the stored meta data.
+	 * @covers StandardPost::get_meta()
+	 */
+	function test_get_meta_returns_proper_data(){
+
+		$string_data = 'This is a string.';
+		$array_data = array('this', 'is', 'an', 'array');
+		$int_data = 1234;
+		$bool_data = false;
+
+		// Create different types of meta data
+		$this->standard_post->set_meta('string_data', $string_data);
+		$this->standard_post->set_meta('array_data', $array_data);
+		$this->standard_post->set_meta('int_data', $int_data);
+		$this->standard_post->set_meta('bool_data', $bool_data);
+
+		$this->assertEquals($string_data, $this->standard_post->get_meta('string_data'));
+		$this->assertEquals($array_data, $this->standard_post->get_meta('array_data'));
+		$this->assertEquals($int_data, $this->standard_post->get_meta('int_data'));
+		$this->assertEquals($bool_data, $this->standard_post->get_meta('bool_data'));
+
+	}
+
+	/**
+	 * get_meta() should return false when passed a nonexistent meta key
+	 * @covers StandardPost::get_meta()
+	 */
+	function test_get_meta_returns_false_for_nonexistent_meta_key(){
+		$this->assertEquals(false, $this->standard_post->get_meta('this_key_does_not_exist'));
+	}
+
 }
 
 
