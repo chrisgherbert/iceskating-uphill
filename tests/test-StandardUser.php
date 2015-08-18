@@ -7,8 +7,9 @@ class UserTests extends WP_UnitTestCase {
 		parent::setUp();
 
 		// Create basic user
-		$user_id = $this->factory->user->create();
-		$this->user = new StandardUser(get_user_by('id', $user_id));
+		$this->user_id = $this->factory->user->create();
+		$this->wp_user = get_user_by('id', $this->user_id);
+		$this->user = new StandardUser($this->wp_user);
 
 	}
 
@@ -93,10 +94,10 @@ class UserTests extends WP_UnitTestCase {
 		$int_data = 1234;
 		$bool_data = false;
 
-		$this->user->set_meta('string_data', $string_data);
-		$this->user->set_meta('array_data', $array_data);
-		$this->user->set_meta('int_data', $int_data);
-		$this->user->set_meta('bool_data', $bool_data);
+		update_user_meta($this->user_id, 'string_data', $string_data);
+		update_user_meta($this->user_id, 'array_data', $array_data);
+		update_user_meta($this->user_id, 'int_data', $int_data);
+		update_user_meta($this->user_id, 'bool_data', $bool_data);
 
 		$this->assertEquals($string_data, $this->user->get_meta('string_data'));
 		$this->assertEquals($array_data, $this->user->get_meta('array_data'));
@@ -111,6 +112,43 @@ class UserTests extends WP_UnitTestCase {
 	 */
 	function test_get_meta_returns_false_for_nonexistent_meta_key(){
 		$this->assertEquals(false, $this->user->get_meta('this_key_does_not_exist'));
+	}
+
+	/**
+	 * returns integer for new meta data
+	 * @covers StandardUser::set_meta()
+	 */
+	function test_set_meta_returns_integer_for_new_data(){
+		$this->assertInternalType('int', $this->user->set_meta('new_key', 'This is new data!'));
+	}
+
+	/**
+	 * Returns false for existing data (key and value exist and are the same)
+	 * @covers StandardUser::set_meta()
+	 */
+	function test_set_meta_returns_false_for_unchanged_data(){
+
+		$this->user->set_meta('new_key', 'new_value');
+
+		$this->assertEquals(false, $this->user->set_meta('new_key', 'new_value'));
+
+	}
+
+	/**
+	 * Sets user meta data
+	 * @covers StandardUser::set_meta()
+	 */
+	function test_set_meta_sets_meta_data(){
+
+		$key = 'new_key';
+		$value = 'new_value';
+
+		$this->user->set_meta($key, $value);
+
+		$retrieved_value = get_user_meta($this->wp_user->ID, $key, true);
+
+		$this->assertEquals($value, $retrieved_value);
+
 	}
 
 	/**
