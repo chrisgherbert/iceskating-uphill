@@ -110,6 +110,9 @@ class StandardTaxonomyTerm extends IceskatingUphillBase {
 		if ($this->get_child_terms()){
 			return true;
 		}
+		else {
+			return false;
+		}
 	}
 
 	/**
