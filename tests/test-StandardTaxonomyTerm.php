@@ -81,34 +81,64 @@ class StandardTaxonomyTermTest extends WP_UnitTestCase {
 	 * Returns null when no parent term exists
 	 * @covers StandardTaxonomyTerm::get_parent()
 	 */
-	function get_parent_returns_null_if_no_parent_exists(){
-		$this->assertEquals(null, $this->get_parent());
+	function test_get_parent_returns_null_if_no_parent_exists(){
+		$this->assertEquals(null, $this->term->get_parent());
 	}
 
 	/**
 	 * Returns instance of StandardTaxonomyTerm if parent exists
 	 * @covers StandardTaxonomyTerm::get_parent()
 	 */
-	function get_parent_returns_StandardTaxonomyTerm_if_parent_exists(){
+	function test_get_parent_returns_StandardTaxonomyTerm_if_parent_exists(){
 
 		$wp_term_with_parent = $this->factory->term->create_and_get(array(
 			'parent' => $this->wp_term->term_id
 		));
 
-		$this->assertInstanceOf('StandardTaxonomyTerm', $wp_term_with_parent->get_parent());
+		$term_with_parent = new StandardTaxonomyTerm($wp_term_with_parent);
+
+		$this->assertInstanceOf('StandardTaxonomyTerm', $term_with_parent->get_parent());
 
 	}
 
 	/**
-	 * Returns null when no posts are associated with the term
+	 * Returns array
 	 * @covers StandardTaxonomyTerm::get_posts()
 	 */
-	function get_posts_returns_null_when_no_associated_posts_exist(){
-		$this->assertEquals(null, $this->term->get_posts());
+	function test_get_posts_returns_array(){
+		$this->assertInternalType('array', $this->term->get_posts());
 	}
 
-	function get_posts_returns_array(){
-		$this->assertInternalType('array', $this->term->get_posts());
+	function test_get_posts_not_empty_when_associated_posts_exist(){
+
+		$post_ids = $this->factory->post->create_many(10);
+
+		foreach ($post_ids as $post_id){
+			wp_set_post_terms($post_id, array($this->wp_term->term_id, $this->wp_term->taxonomy));
+		}
+
+		$this->assertNotEmpty($this->term->get_posts());
+
+	}
+
+	/**
+	 * Returns empty value when no posts are associated with the term
+	 * @covers StandardTaxonomyTerm::get_posts()
+	 */
+	function test_get_posts_returns_empty_when_no_associated_posts_exist(){
+		$this->assertEmpty($this->term->get_posts());
+	}
+
+	function test_get_posts_returns_StandardPosts_associated_posts_exist(){
+
+		$post_ids = $this->factory->post->create_many(10);
+
+		foreach ($post_ids as $post_id){
+			wp_set_post_terms($post_id, array($this->wp_term->term_id, $this->wp_term->taxonomy));
+		}
+
+		$this->assertContainsOnlyInstancesOf('StandardPost', $this->term->get_posts());
+
 	}
 
 }
