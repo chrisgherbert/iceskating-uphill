@@ -9,6 +9,14 @@ class StandardTaxonomyTerm extends IceskatingUphillBase {
 	}
 
 	/**
+	 * Get the term ID
+	 * @return int Term ID
+	 */
+	public function get_id(){
+		return $this->term_obj->term_id;
+	}
+
+	/**
 	 * Get the term slug
 	 * @return string The term slug
 	 */
@@ -22,14 +30,6 @@ class StandardTaxonomyTerm extends IceskatingUphillBase {
 	 */
 	public function get_name(){
 		return $this->term_obj->name;
-	}
-
-	/**
-	 * Get the term ID
-	 * @return int Term ID
-	 */
-	public function get_id(){
-		return $this->term_obj->term_id;
 	}
 
 	/**
