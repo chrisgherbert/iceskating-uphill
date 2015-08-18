@@ -59,7 +59,7 @@ class StandardUser extends IceskatingUphillBase {
 	 * @param mixed  $meta_value Data to be stored
 	 */
 	public function set_meta($meta_key, $meta_value){
-		update_user_meta($this->get_id(), $meta_key, $meta_value);
+		return update_user_meta($this->get_id(), $meta_key, $meta_value);
 	}
 
 }
