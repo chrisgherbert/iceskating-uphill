@@ -4,7 +4,7 @@ class StandardTaxonomyTerm extends IceskatingUphillBase {
 
 	protected $term_obj;
 
-	public function __construct($term_obj){
+	public function __construct(stdClass $term_obj){
 		$this->term_obj = $term_obj;
 	}
 
