@@ -86,7 +86,7 @@ class StandardTaxonomyTerm extends IceskatingUphillBase {
 	 */
 	public function get_posts($post_type = 'post', $number = -1, $include_children = false){
 
-		$posts = get_posts(array(
+		$wp_posts = get_posts(array(
 			'post_type' => $post_type,
 			'posts_per_page' => $number,
 			'tax_query' => array(
@@ -98,7 +98,13 @@ class StandardTaxonomyTerm extends IceskatingUphillBase {
 			)
 		));
 
-		return StandardQueries::get_posts($posts);
+		$posts = array();
+
+		foreach ($wp_posts as $wp_post){
+			$posts[] = new StandardPost($wp_post);
+		}
+
+		return $posts;
 
 	}
 
