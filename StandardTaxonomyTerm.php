@@ -141,7 +141,8 @@ class StandardTaxonomyTerm extends IceskatingUphillBase {
 	public function get_child_terms(){
 
 		$args = array(
-			'child_of' => $this->get_id()
+			'child_of' => $this->get_id(),
+			'hide_empty' => 0
 		);
 
 		$terms = get_terms($this->get_taxonomy(), $args);

@@ -145,9 +145,13 @@ class StandardTaxonomyTermTest extends WP_UnitTestCase {
 
 		$this->markTestIncomplete('This test has not been implemented yet.');
 
-		$child_term = $this->factory->term->create(array(
+		$child_term = $this->factory->term->create_and_get(array(
 			'parent' => $this->wp_term->term_id
 		));
+
+		$post = $this->factory->post->create();
+
+		wp_set_object_terms($post, $child_term->term_id, $child_term->taxonomy);
 
 		$this->assertInternalType('array', $this->term->get_child_terms());
 
@@ -155,17 +159,39 @@ class StandardTaxonomyTermTest extends WP_UnitTestCase {
 
 	/**
 	 * Returns a valid URL
-	 * @covers LearnLibertyTaxonomyTerm::get_url()
+	 * @covers StandardTaxonomyTerm::get_url()
 	 */
 	function test_get_url_returns_valid_url(){
 		$valid_url = filter_var($this->term->get_url(), FILTER_VALIDATE_URL);
 		$this->assertNotEquals(false, $valid_url);
 	}
 
+	/**
+	 * Returns boolean
+	 * @covers StandardTaxonomyTerm::is_child()
+	 */
 	function test_is_child_returns_boolean(){
 		$this->assertInternalType('bool', $this->term->is_child());
 	}
 
+	/**
+	 * Returns false when term has no parent
+	 * @covers StandardTaxonomyTerm::is_child()
+	 */
+	function test_is_child_returns_false_when_term_has_no_parent(){
+
+		$wp_term = $this->factory->term->create_and_get();
+
+		$orphan_term = new StandardTaxonomyTerm($wp_term);
+
+		$this->assertEquals(false, $orphan_term->is_child());
+
+	}
+
+	/**
+	 * Returns true when term has parent
+	 * @covers StandardTaxonomyTerm::is_child()
+	 */
 	function test_is_child_returns_true_when_term_has_parent(){
 
 		$wp_term = $this->factory->term->create_and_get(array(
