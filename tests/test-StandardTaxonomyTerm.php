@@ -141,6 +141,43 @@ class StandardTaxonomyTermTest extends WP_UnitTestCase {
 
 	}
 
+	function test_get_child_terms_returns_array(){
+
+		$this->markTestIncomplete('This test has not been implemented yet.');
+
+		$child_term = $this->factory->term->create(array(
+			'parent' => $this->wp_term->term_id
+		));
+
+		$this->assertInternalType('array', $this->term->get_child_terms());
+
+	}
+
+	/**
+	 * Returns a valid URL
+	 * @covers LearnLibertyTaxonomyTerm::get_url()
+	 */
+	function test_get_url_returns_valid_url(){
+		$valid_url = filter_var($this->term->get_url(), FILTER_VALIDATE_URL);
+		$this->assertNotEquals(false, $valid_url);
+	}
+
+	function test_is_child_returns_boolean(){
+		$this->assertInternalType('bool', $this->term->is_child());
+	}
+
+	function test_is_child_returns_true_when_term_has_parent(){
+
+		$wp_term = $this->factory->term->create_and_get(array(
+			'parent' => $this->wp_term->term_id
+		));
+
+		$child_term = new StandardTaxonomyTerm($wp_term);
+
+		$this->assertEquals(true, $child_term->is_child());
+
+	}
+
 }
 
 
