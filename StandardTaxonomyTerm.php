@@ -129,6 +129,9 @@ class StandardTaxonomyTerm extends IceskatingUphillBase {
 		if ($this->get_parent_id()){
 			return true;
 		}
+		else {
+			return false;
+		}
 	}
 
 	/**
