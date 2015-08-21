@@ -38,6 +38,23 @@ class StandardTaxonomyTermTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Returns string
+	 * @covers StandardTaxonomyTerm::get_slug()
+	 */
+	function test_get_slug_returns_string(){
+		$this->assertInternalType('string', $this->term->get_slug());
+	}
+
+	/**
+	 * Returns the term's slug
+	 * @covers StandardTaxonomyTerm::get_slug()
+	 */
+	function test_get_slug_returns_term_slug(){
+		$slug = $this->wp_term->slug;
+		$this->assertEquals($slug, $this->term->get_slug());
+	}
+
+	/**
 	 * Returns a string
 	 * @covers StandardTaxonomyTerm::get_name()
 	 */
@@ -109,6 +126,10 @@ class StandardTaxonomyTermTest extends WP_UnitTestCase {
 		$this->assertInternalType('array', $this->term->get_posts());
 	}
 
+	/**
+	 * Does not return an empty value when associated posts exist
+	 * @covers StandardTaxonomyTerm::get_posts()
+	 */
 	function test_get_posts_not_empty_when_associated_posts_exist(){
 
 		$post_ids = $this->factory->post->create_many(10);
@@ -129,7 +150,11 @@ class StandardTaxonomyTermTest extends WP_UnitTestCase {
 		$this->assertEmpty($this->term->get_posts());
 	}
 
-	function test_get_posts_returns_StandardPosts_associated_posts_exist(){
+	/**
+	 * Returns an array of StandardPost instances when associated posts exist
+	 * @covers StandardTaxonomyTerm::get_posts()
+	 */
+	function test_get_posts_returns_StandardPost_objects_when_associated_posts_exist(){
 
 		$post_ids = $this->factory->post->create_many(10);
 

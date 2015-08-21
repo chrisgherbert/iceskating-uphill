@@ -80,13 +80,10 @@ class StandardPost extends IceskatingUphillBase {
 
 	public function get_post_type_labels(){
 
-		if (!$this->labels){
-			$post_type_object = get_post_type_object($this->get_post_type());
-			$this->labels = $post_type_object->labels;
-		}
+		$post_type_object = get_post_type_object($this->get_post_type());
 
-		if ($this->labels){
-			return $this->labels;
+		if ($post_type_object){
+			return $post_type_object->labels;
 		}
 
 	}
@@ -143,9 +140,7 @@ class StandardPost extends IceskatingUphillBase {
 			$tags[] = StandardQueries::get_term($wp_tag);
 		}
 
-		if ($tags){
-			return $tags;
-		}
+		return $tags;
 
 	}
 
@@ -191,12 +186,7 @@ class StandardPost extends IceskatingUphillBase {
 
 		$updated = update_post_meta($this->get_id(), $key, $value);
 
-		if ($updated){
-			return true;
-		}
-		else {
-			return false;
-		}
+		return $updated;
 
 	}
 
