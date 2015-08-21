@@ -37,4 +37,36 @@ abstract class IceskatingUphillBase {
 
 	}
 
+	/**
+	 * Get post date in words - "5 days ago"
+	 * @param  string $date_string Date to format
+	 * @return string Post date in words
+	 */
+	protected static function format_date_since($date_string){
+
+		if ($date_string){
+
+			$time = time() - strtotime($date_string);
+
+			$tokens = array (
+				31536000 => 'year',
+				2592000 => 'month',
+				604800 => 'week',
+				86400 => 'day',
+				3600 => 'hour',
+				60 => 'minute',
+				1 => 'second'
+			);
+
+			foreach ($tokens as $unit => $text) {
+				if ($time < $unit) continue;
+				$numberOfUnits = floor($time / $unit);
+				return $numberOfUnits.' '.$text.(($numberOfUnits>1)?'s':'') . ' ago';
+			}
+
+		}
+
+	}
+
 }
+
