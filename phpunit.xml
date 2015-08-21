@@ -11,4 +11,16 @@
 			<directory prefix="test-" suffix=".php">./tests/</directory>
 		</testsuite>
 	</testsuites>
+	<filter>
+		<whitelist>
+			<directory suffix=".php">.</directory>
+			<exclude>
+				<directory suffix=".php">./tests</directory>
+				<directory suffix=".php">./bin</directory>
+				<file>./iceskating-uphill.php</file>
+				<file>./index.php</file>
+				<file>./IceskatingUphillBase.php</file> <!-- class only contains protected methods -->
+			</exclude>
+		</whitelist>
+	</filter>
 </phpunit>
