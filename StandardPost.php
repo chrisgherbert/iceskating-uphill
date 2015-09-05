@@ -236,4 +236,18 @@ class StandardPost extends IceskatingUphillBase {
 		return wp_get_attachment_url($attachment_id);
 	}
 
+	/////////////
+	// Factory //
+	/////////////
+
+	public static function create_from_id($post_id){
+
+		$post = get_post($post_id);
+
+		if (is_a($post, 'WP_Post')){
+			return new self($post);
+		}
+
+	}
+
 }

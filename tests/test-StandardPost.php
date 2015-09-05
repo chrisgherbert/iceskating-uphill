@@ -596,5 +596,31 @@ class PostTests extends WP_UnitTestCase {
 	}
 
 }
+	/**
+	 * Returns instance of StandardPost
+	 * @covers StandardPost::create_from_id()
+	 */
+	function test_create_from_id_returns_StandardPost_instance(){
 
+		$post_id = $this->factory->post->create();
+
+		$post = StandardPost::create_from_id($post_id);
+
+		$this->assertInstanceOf('StandardPost', $post);
+
+	}
+
+	/**
+	 * Return null without a valid post ID
+	 * @covers StandardPost::create_from_id()
+	 */
+	function test_create_from_id_returns_null_with_invalid_post_id(){
+
+		$invalid_id = array('wrong');
+
+		$this->assertNull(StandardPost::create_from_id($invalid_id));
+
+	}
+
+}
 
