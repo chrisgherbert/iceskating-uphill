@@ -218,11 +218,16 @@ class StandardPost extends IceskatingUphillBase {
 	 * @param  string $size          Desired size (wp image size handle)
 	 * @return string                Image URL
 	 */
-	protected static function get_image_attachment_url($attachment_id=false, $size='large'){
+	protected static function get_image_attachment_url($attachment_id = null, $size = 'large'){
 
 		if ($attachment_id){
+
 			$image_array = wp_get_attachment_image_src($attachment_id, $size, false);
-			return $image_array[0];
+
+			if ($image_array !== false){
+				return $image_array[0];
+			}
+
 		}
 
 	}
