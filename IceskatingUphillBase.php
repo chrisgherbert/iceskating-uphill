@@ -12,18 +12,23 @@ abstract class IceskatingUphillBase {
 	 */
 	protected static function shorten_string_by_words($string, $words = 20, $suffix = '&hellip;'){
 
-		$words_array = explode(' ', $string);
+		if (is_string($string)){
 
-		if (count($words_array) > $words){
+			$words_array = explode(' ', $string);
 
-			$words_array = array_slice($words_array, 0, $words);
+			if (count($words_array) > $words){
 
-			return implode(' ', $words_array) . $suffix;
+				$words_array = array_slice($words_array, 0, $words);
+
+				return implode(' ', $words_array) . $suffix;
+
+			}
+			else {
+				return $string;
+			}
 
 		}
-		else {
-			return $string;
-		}
+
 
 	}
 
@@ -44,7 +49,7 @@ abstract class IceskatingUphillBase {
 	 */
 	protected static function format_date_since($date_string){
 
-		if ($date_string){
+		if (is_string($date_string) || is_int($date_string)){
 
 			$time = time() - strtotime($date_string);
 
