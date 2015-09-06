@@ -122,7 +122,15 @@ class PostTests extends WP_UnitTestCase {
 	 * @covers StandardPost::get_date_since()
 	 */
 	function test_get_date_since_returns_string(){
-		$this->assertInternalType('string', $this->standard_post->get_date_since());
+
+		$date = date('Y-m-d H:i:s');
+
+		$post = new StandardPost($this->factory->post->create_and_get(array(
+			'post_date' => $date
+		)));
+
+		$this->assertInternalType('string', $post->get_date_since());
+
 	}
 
 	/**
@@ -206,6 +214,20 @@ class PostTests extends WP_UnitTestCase {
 		$words = explode(' ', $this->long_content->get_excerpt());
 
 		$this->assertEquals(30, count($words));
+
+	}
+
+	function test_get_excerpt_returns_excerpt_unaltered_if_excerpt_less_then_30_words_long(){
+
+		$excerpt = 'This is a short excerpt';
+
+		$post = new StandardPost($this->factory->post->create_and_get(array(
+			'post_excerpt' => $excerpt
+		)));
+
+		$filtered_excerpt = apply_filters('the_excerpt', $excerpt);
+
+		$this->assertEquals($filtered_excerpt, $post->get_excerpt());
 
 	}
 
@@ -432,24 +454,29 @@ class PostTests extends WP_UnitTestCase {
 	/**
 	 * get_meta() should properly return the stored meta data.
 	 * @covers StandardPost::get_meta()
+	 * @dataProvider get_meta_provider
 	 */
-	function test_get_meta_returns_proper_data(){
-
-		$string_data = 'This is a string.';
-		$array_data = array('this', 'is', 'an', 'array');
-		$int_data = 1234;
-		$bool_data = false;
+	function test_get_meta_returns_proper_data($key, $data){
 
 		// Create different types of meta data
-		$this->standard_post->set_meta('string_data', $string_data);
-		$this->standard_post->set_meta('array_data', $array_data);
-		$this->standard_post->set_meta('int_data', $int_data);
-		$this->standard_post->set_meta('bool_data', $bool_data);
+		$this->standard_post->set_meta($key, $data);
 
-		$this->assertEquals($string_data, $this->standard_post->get_meta('string_data'));
-		$this->assertEquals($array_data, $this->standard_post->get_meta('array_data'));
-		$this->assertEquals($int_data, $this->standard_post->get_meta('int_data'));
-		$this->assertEquals($bool_data, $this->standard_post->get_meta('bool_data'));
+		$this->assertEquals($data, $this->standard_post->get_meta($key));
+
+	}
+
+	/**
+	 * Data provider for test_get_meta_returns_proper_data
+	 * @return array
+	 */
+	function get_meta_provider(){
+
+		return array(
+			array('string', 'This is a string'),
+			array('array', array('this', 'is', 'an', 'array')),
+			array('int', 1234),
+			array('bool', false)
+		);
 
 	}
 
