@@ -245,7 +245,11 @@ class StandardPost extends IceskatingUphillBase {
 		$post = get_post($post_id);
 
 		if (is_a($post, 'WP_Post')){
-			return new self($post);
+
+			$class = get_called_class();
+
+			return new $class($post);
+
 		}
 
 	}
