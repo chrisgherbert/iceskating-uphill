@@ -62,5 +62,24 @@ class StandardUser extends IceskatingUphillBase {
 		return update_user_meta($this->get_id(), $meta_key, $meta_value);
 	}
 
+	/**
+	 * Create object from WP user ID
+	 * @param  string $user_id WordPress user ID
+	 * @return StandardUser    User object
+	 */
+	public static function create_from_id($user_id){
+
+		$user = get_user_by('id', $user_id);
+
+		if (is_a($user, 'WP_User')){
+
+			$class = get_called_class();
+
+			return new $class($user);
+
+		}
+
+	}
+
 }
 
