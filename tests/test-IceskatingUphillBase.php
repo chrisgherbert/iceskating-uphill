@@ -14,6 +14,12 @@ class ExtendBase extends IceskatingUphillBase {
 
 	}
 
+	public function expose_format_date_string($date_string = null, $format = null){
+
+		return self::format_date_string($date_string, $format);
+
+	}
+
 }
 
 class IceskatingUphillBaseTest extends WP_UnitTestCase {
@@ -119,7 +125,7 @@ class IceskatingUphillBaseTest extends WP_UnitTestCase {
 
 		$shortened_string = $base->expose_shorten_string_by_words($string, 20, $suffix);
 
-		$this->assertEquals(false, strpos($shortened_string, $suffix));
+		$this->assertFalse(strpos($shortened_string, $suffix));
 
 	}
 
@@ -142,6 +148,12 @@ class IceskatingUphillBaseTest extends WP_UnitTestCase {
 			array(new stdClass),
 			array(true)
 		);
+
+	}
+
+	public function test_format_date_string_returns_string(){
+
+
 
 	}
 
