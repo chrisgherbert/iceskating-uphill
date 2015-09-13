@@ -79,30 +79,31 @@ class UserTests extends WP_UnitTestCase {
 
 		$wp_user = get_user_by('login', $this->user->get_username());
 
-		$this->assertEquals($wp_user->user_login, $this->user->get_username());
+		$this->assertSame($wp_user->user_login, $this->user->get_username());
 
 	}
 
 	/**
 	 * get_meta() should properly return the stored meta data.
 	 * @covers StandardUser::get_meta()
+	 * @dataProvider get_meta_data_provider
 	 */
-	function test_get_meta_returns_proper_data(){
+	function test_get_meta_returns_proper_data($key, $value){
 
-		$string_data = 'This is a string.';
-		$array_data = array('this', 'is', 'an', 'array');
-		$int_data = 1234;
-		$bool_data = false;
+		update_user_meta($this->user_id, $key, $value);
 
-		update_user_meta($this->user_id, 'string_data', $string_data);
-		update_user_meta($this->user_id, 'array_data', $array_data);
-		update_user_meta($this->user_id, 'int_data', $int_data);
-		update_user_meta($this->user_id, 'bool_data', $bool_data);
+		$this->assertEquals($value, $this->user->get_meta($key));
 
-		$this->assertEquals($string_data, $this->user->get_meta('string_data'));
-		$this->assertEquals($array_data, $this->user->get_meta('array_data'));
-		$this->assertEquals($int_data, $this->user->get_meta('int_data'));
-		$this->assertEquals($bool_data, $this->user->get_meta('bool_data'));
+	}
+
+	public function get_meta_data_provider(){
+
+		return array(
+			array('string_data', 'This is a string.'),
+			array('array_data', array('this', 'is', 'an', 'array')),
+			array('int_data', 1234),
+			array('bool_data', false),
+		);
 
 	}
 
@@ -110,8 +111,8 @@ class UserTests extends WP_UnitTestCase {
 	 * get_meta() should return false when passed a nonexistent meta key
 	 * @covers StandardUser::get_meta()
 	 */
-	function test_get_meta_returns_false_for_nonexistent_meta_key(){
-		$this->assertEquals(false, $this->user->get_meta('this_key_does_not_exist'));
+	function test_get_meta_returns_empty_string_for_nonexistent_meta_key(){
+		$this->assertEmpty($this->user->get_meta('this_key_does_not_exist'));
 	}
 
 	/**
@@ -130,7 +131,7 @@ class UserTests extends WP_UnitTestCase {
 
 		$this->user->set_meta('new_key', 'new_value');
 
-		$this->assertEquals(false, $this->user->set_meta('new_key', 'new_value'));
+		$this->assertFalse($this->user->set_meta('new_key', 'new_value'));
 
 	}
 
@@ -147,7 +148,7 @@ class UserTests extends WP_UnitTestCase {
 
 		$retrieved_value = get_user_meta($this->wp_user->ID, $key, true);
 
-		$this->assertEquals($value, $retrieved_value);
+		$this->assertSame($value, $retrieved_value);
 
 	}
 
@@ -175,6 +176,42 @@ class UserTests extends WP_UnitTestCase {
 		$this->assertNotEquals($default_format, $custom_format);
 
 	}
+
+	/**
+	 * returns StandardUser instance with a valid user ID
+	 * @covers StandardUser::create_from_id()
+	 */
+	function test_create_from_id_returns_StandardUser(){
+
+		$id = $this->factory->user->create();
+
+		$this->assertInstanceOf('StandardUser', StandardUser::create_from_id($id));
+
+	}
+
+	/**
+	 * Returns null without a valid user ID
+	 * @dataProvider invalid_user_ids
+	 */
+	function test_create_from_id_returns_null_with_invalid_user_id($value){
+		$this->assertNull(StandardUser::create_from_id($value));
+	}
+
+	function invalid_user_ids(){
+
+		return array(
+			array(786786),
+			array(false),
+			array(true),
+			array('string'),
+			array(array('array')),
+			array(2.123),
+			array(new stdClass)
+		);
+
+	}
+
+
 
 }
 
