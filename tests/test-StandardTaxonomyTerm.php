@@ -34,7 +34,7 @@ class StandardTaxonomyTermTest extends WP_UnitTestCase {
 	 * @covers StandardTaxonomyTerm::get_id()
 	 */
 	function test_get_id_returns_term_id(){
-		$this->assertEquals($this->wp_term->term_id, $this->term->get_id());
+		$this->assertSame($this->wp_term->term_id, $this->term->get_id());
 	}
 
 	/**
@@ -51,7 +51,7 @@ class StandardTaxonomyTermTest extends WP_UnitTestCase {
 	 */
 	function test_get_slug_returns_term_slug(){
 		$slug = $this->wp_term->slug;
-		$this->assertEquals($slug, $this->term->get_slug());
+		$this->assertSame($slug, $this->term->get_slug());
 	}
 
 	/**
@@ -99,7 +99,7 @@ class StandardTaxonomyTermTest extends WP_UnitTestCase {
 	 * @covers StandardTaxonomyTerm::get_parent()
 	 */
 	function test_get_parent_returns_null_if_no_parent_exists(){
-		$this->assertEquals(null, $this->term->get_parent());
+		$this->assertNull($this->term->get_parent());
 	}
 
 	/**
@@ -209,7 +209,7 @@ class StandardTaxonomyTermTest extends WP_UnitTestCase {
 
 		$orphan_term = new StandardTaxonomyTerm($wp_term);
 
-		$this->assertEquals(false, $orphan_term->is_child());
+		$this->assertFalse($orphan_term->is_child());
 
 	}
 
@@ -225,7 +225,7 @@ class StandardTaxonomyTermTest extends WP_UnitTestCase {
 
 		$child_term = new StandardTaxonomyTerm($wp_term);
 
-		$this->assertEquals(true, $child_term->is_child());
+		$this->assertTrue($child_term->is_child());
 
 	}
 
