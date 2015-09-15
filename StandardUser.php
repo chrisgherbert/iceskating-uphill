@@ -73,6 +73,27 @@ class StandardUser extends IceskatingUphillBase {
 
 		if (is_a($user, 'WP_User')){
 
+			// Get current class (in case this is called from a child class)
+			$class = get_called_class();
+
+			return new $class($user);
+
+		}
+
+	}
+
+	/**
+	 * Create a user object from the email address
+	 * @param  string $user_email User's email address
+	 * @return StandardUser       User object
+	 */
+	public static function create_from_email($user_email){
+
+		$user = get_user_by('email', $user_email);
+
+		if (is_a($user, 'WP_User')){
+
+			// Get current class (in case this is called from a child class)
 			$class = get_called_class();
 
 			return new $class($user);
