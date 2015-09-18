@@ -1,6 +1,6 @@
 <?php
 
-class StandardPost extends IceskatingUphillBase {
+class StandardPost extends IceskatingUphillBase implements WordPressEntity {
 
 	protected $wp_post_obj;
 	protected $labels;

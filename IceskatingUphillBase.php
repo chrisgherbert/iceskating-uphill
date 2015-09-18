@@ -1,5 +1,12 @@
 <?php
 
+interface WordPressEntity {
+
+	public function get_id();
+	public static function create_from_id($id);
+
+}
+
 abstract class IceskatingUphillBase {
 
 	/**

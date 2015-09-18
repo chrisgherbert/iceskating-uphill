@@ -1,6 +1,6 @@
 <?php
 
-class StandardUser extends IceskatingUphillBase {
+class StandardUser extends IceskatingUphillBase implements WordPressEntity {
 
 	protected $wp_user_obj;
 

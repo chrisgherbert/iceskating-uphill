@@ -1,6 +1,6 @@
 <?php
 
-class StandardTaxonomyTerm extends IceskatingUphillBase {
+class StandardTaxonomyTerm extends IceskatingUphillBase implements WordPressEntity {
 
 	protected $term_obj;
 
@@ -185,6 +185,24 @@ class StandardTaxonomyTerm extends IceskatingUphillBase {
 		}
 		else {
 			return $link->get_error_message();
+		}
+
+	}
+
+	/////////////
+	// Factory //
+	/////////////
+
+	public static function create_from_id($id){
+
+		$wp_term = get_term_by('id', $id);
+
+		if (is_a($wp_term, 'stdClass')){
+
+			$class = get_called_class();
+
+			return new $class($wp_term);
+
 		}
 
 	}
