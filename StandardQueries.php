@@ -21,7 +21,7 @@ class StandardQueries {
 
 	}
 
-	public static function get_term(StdClass $term){
+	public static function get_term($term){
 
 		return new StandardTaxonomyTerm($term);
 
