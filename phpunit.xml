@@ -19,7 +19,6 @@
 				<directory suffix=".php">./bin</directory>
 				<file>./iceskating-uphill.php</file>
 				<file>./index.php</file>
-				<file>./IceskatingUphillBase.php</file> <!-- class only contains protected methods -->
 			</exclude>
 		</whitelist>
 	</filter>

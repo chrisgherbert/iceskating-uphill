@@ -1,6 +1,6 @@
 <?php
 
-class StandardPost extends IceskatingUphillBase {
+class StandardPost extends IceskatingUphillBase implements WordPressEntity {
 
 	protected $wp_post_obj;
 	protected $labels;
@@ -218,17 +218,40 @@ class StandardPost extends IceskatingUphillBase {
 	 * @param  string $size          Desired size (wp image size handle)
 	 * @return string                Image URL
 	 */
-	protected static function get_image_attachment_url($attachment_id=false, $size='large'){
+	protected static function get_image_attachment_url($attachment_id = null, $size = 'large'){
 
 		if ($attachment_id){
+
 			$image_array = wp_get_attachment_image_src($attachment_id, $size, false);
-			return $image_array[0];
+
+			if ($image_array !== false){
+				return $image_array[0];
+			}
+
 		}
 
 	}
 
 	protected static function get_file_attachment_url($attachment_id){
 		return wp_get_attachment_url($attachment_id);
+	}
+
+	/////////////
+	// Factory //
+	/////////////
+
+	public static function create_from_id($post_id){
+
+		$post = get_post($post_id);
+
+		if (is_a($post, 'WP_Post')){
+
+			$class = get_called_class();
+
+			return new $class($post);
+
+		}
+
 	}
 
 }

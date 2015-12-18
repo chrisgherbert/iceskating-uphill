@@ -1,6 +1,6 @@
 <?php
 
-class StandardUser extends IceskatingUphillBase {
+class StandardUser extends IceskatingUphillBase implements WordPressEntity {
 
 	protected $wp_user_obj;
 
@@ -60,6 +60,46 @@ class StandardUser extends IceskatingUphillBase {
 	 */
 	public function set_meta($meta_key, $meta_value){
 		return update_user_meta($this->get_id(), $meta_key, $meta_value);
+	}
+
+	/**
+	 * Create object from WP user ID
+	 * @param  string $user_id WordPress user ID
+	 * @return StandardUser    User object
+	 */
+	public static function create_from_id($user_id){
+
+		$user = get_user_by('id', $user_id);
+
+		if (is_a($user, 'WP_User')){
+
+			// Get current class (in case this is called from a child class)
+			$class = get_called_class();
+
+			return new $class($user);
+
+		}
+
+	}
+
+	/**
+	 * Create a user object from the email address
+	 * @param  string $user_email User's email address
+	 * @return StandardUser       User object
+	 */
+	public static function create_from_email($user_email){
+
+		$user = get_user_by('email', $user_email);
+
+		if (is_a($user, 'WP_User')){
+
+			// Get current class (in case this is called from a child class)
+			$class = get_called_class();
+
+			return new $class($user);
+
+		}
+
 	}
 
 }

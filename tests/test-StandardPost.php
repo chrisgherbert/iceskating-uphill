@@ -122,7 +122,15 @@ class PostTests extends WP_UnitTestCase {
 	 * @covers StandardPost::get_date_since()
 	 */
 	function test_get_date_since_returns_string(){
-		$this->assertInternalType('string', $this->standard_post->get_date_since());
+
+		$date = date('Y-m-d H:i:s');
+
+		$post = new StandardPost($this->factory->post->create_and_get(array(
+			'post_date' => $date
+		)));
+
+		$this->assertInternalType('string', $post->get_date_since());
+
 	}
 
 	/**
@@ -206,6 +214,20 @@ class PostTests extends WP_UnitTestCase {
 		$words = explode(' ', $this->long_content->get_excerpt());
 
 		$this->assertEquals(30, count($words));
+
+	}
+
+	function test_get_excerpt_returns_excerpt_unaltered_if_excerpt_less_then_30_words_long(){
+
+		$excerpt = 'This is a short excerpt';
+
+		$post = new StandardPost($this->factory->post->create_and_get(array(
+			'post_excerpt' => $excerpt
+		)));
+
+		$filtered_excerpt = apply_filters('the_excerpt', $excerpt);
+
+		$this->assertEquals($filtered_excerpt, $post->get_excerpt());
 
 	}
 
@@ -305,7 +327,7 @@ class PostTests extends WP_UnitTestCase {
 	 * @covers StandardPost::get_post_type()
 	 */
 	function test_get_post_type_is_posts_type(){
-		$this->assertEquals($this->wp_post->post_type, $this->standard_post->get_post_type());
+		$this->assertSame($this->wp_post->post_type, $this->standard_post->get_post_type());
 	}
 
 	/**
@@ -313,7 +335,7 @@ class PostTests extends WP_UnitTestCase {
 	 * @covers StandardPost::get_post_type()
 	 */
 	function test_get_post_type_cpt_is_posts_type(){
-		$this->assertEquals($this->custom_post_type->get_wp_post_obj()->post_type, $this->custom_post_type->get_post_type());
+		$this->assertSame($this->custom_post_type->get_wp_post_obj()->post_type, $this->custom_post_type->get_post_type());
 	}
 
 	/**
@@ -334,32 +356,7 @@ class PostTests extends WP_UnitTestCase {
 			'post_type' => 'video'
 		)));
 
-		$this->assertEquals(null, $post->get_post_type_labels());
-
-	}
-
-	function test_get_post_type_labels_contains_certain_things(){
-
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-
-		$labels = $this->standard_post->get_post_type_labels();
-
-		$this->assertEquals(true, isset($labels->name));
-		$this->assertEquals(true, isset($labels->singular_name));
-		$this->assertEquals(true, isset($labels->add_new));
-		$this->assertEquals(true, isset($labels->add_new_item));
-		$this->assertEquals(true, isset($labels->edit_item));
-		$this->assertEquals(true, isset($labels->new_item));
-		$this->assertEquals(true, isset($labels->view_item));
-		$this->assertEquals(true, isset($labels->search_items));
-		$this->assertEquals(true, isset($labels->not_found));
-		$this->assertEquals(true, isset($labels->not_found_in_trash));
-		$this->assertEquals(true, isset($labels->parent_item_colon));
-		$this->assertEquals(true, isset($labels->all_items));
-		$this->assertEquals(true, isset($labels->menu_name));
-		$this->assertEquals(true, isset($labels->name_admin_bar));
+		$this->assertNull($post->get_post_type_labels());
 
 	}
 
@@ -397,7 +394,7 @@ class PostTests extends WP_UnitTestCase {
 
 		$image =  $this->standard_post->get_first_content_image_url();
 
-		$this->assertEquals(false, $image);
+		$this->assertNull($image);
 
 	}
 
@@ -407,8 +404,11 @@ class PostTests extends WP_UnitTestCase {
 	 */
 	function test_get_edit_url_returns_valid_url_for_logged_in_admin_user(){
 
-		// log in admin user
-		wp_set_current_user(1);
+		$admin_user = $this->factory->user->create_and_get();
+
+		$admin_user->set_role('administrator');
+
+		wp_set_current_user($admin_user->ID);
 
 		$edit_url = $this->standard_post->get_edit_url();
 
@@ -419,14 +419,14 @@ class PostTests extends WP_UnitTestCase {
 	}
 
 	/**
-	 * get_edit_url() returns false without a logged in user
+	 * get_edit_url() returns null without a logged in user
 	 * @covers StandardPost::get_edit_url()
 	 */
-	function test_get_edit_url_returns_false_for_logged_out_user(){
+	function test_get_edit_url_returns_null_for_logged_out_user(){
 
 		$edit_url = $this->standard_post->get_edit_url();
 
-		$this->assertEquals(false, $edit_url);
+		$this->assertNull($edit_url);
 
 	}
 
@@ -443,9 +443,9 @@ class PostTests extends WP_UnitTestCase {
 		wp_set_current_user($user_id);
 
 		// Ensure the user cannot edit posts
-		$this->assertEquals(false, current_user_can('edit_posts'));
+		$this->assertFalse(current_user_can('edit_posts'));
 
-		$this->assertEquals(false, $this->standard_post->get_edit_url());
+		$this->assertNull($this->standard_post->get_edit_url());
 
 		wp_set_current_user(0);
 
@@ -454,24 +454,29 @@ class PostTests extends WP_UnitTestCase {
 	/**
 	 * get_meta() should properly return the stored meta data.
 	 * @covers StandardPost::get_meta()
+	 * @dataProvider get_meta_provider
 	 */
-	function test_get_meta_returns_proper_data(){
-
-		$string_data = 'This is a string.';
-		$array_data = array('this', 'is', 'an', 'array');
-		$int_data = 1234;
-		$bool_data = false;
+	function test_get_meta_returns_proper_data($key, $data){
 
 		// Create different types of meta data
-		$this->standard_post->set_meta('string_data', $string_data);
-		$this->standard_post->set_meta('array_data', $array_data);
-		$this->standard_post->set_meta('int_data', $int_data);
-		$this->standard_post->set_meta('bool_data', $bool_data);
+		$this->standard_post->set_meta($key, $data);
 
-		$this->assertEquals($string_data, $this->standard_post->get_meta('string_data'));
-		$this->assertEquals($array_data, $this->standard_post->get_meta('array_data'));
-		$this->assertEquals($int_data, $this->standard_post->get_meta('int_data'));
-		$this->assertEquals($bool_data, $this->standard_post->get_meta('bool_data'));
+		$this->assertEquals($data, $this->standard_post->get_meta($key));
+
+	}
+
+	/**
+	 * Data provider for test_get_meta_returns_proper_data
+	 * @return array
+	 */
+	function get_meta_provider(){
+
+		return array(
+			array('string', 'This is a string'),
+			array('array', array('this', 'is', 'an', 'array')),
+			array('int', 1234),
+			array('bool', false)
+		);
 
 	}
 
@@ -480,7 +485,7 @@ class PostTests extends WP_UnitTestCase {
 	 * @covers StandardPost::get_meta()
 	 */
 	function test_get_meta_returns_false_for_nonexistent_meta_key(){
-		$this->assertEquals(false, $this->standard_post->get_meta('this_key_does_not_exist'));
+		$this->assertEquals('', $this->standard_post->get_meta('this_key_does_not_exist'));
 	}
 
 	/**
@@ -510,7 +515,7 @@ class PostTests extends WP_UnitTestCase {
 
 		$return_value = $this->standard_post->set_meta('test_key', 'new_value');
 
-		$this->assertEquals(true, $return_value);
+		$this->assertTrue($return_value);
 
 	}
 
@@ -542,7 +547,7 @@ class PostTests extends WP_UnitTestCase {
 
 		$post = new StandardPost($wp_post);
 
-		$this->assertEquals(null, $post->get_post_type_singular());
+		$this->assertNull($post->get_post_type_singular());
 
 	}
 
@@ -586,15 +591,44 @@ class PostTests extends WP_UnitTestCase {
 
 		$post = new StandardPost(get_post($this->factory->post->create_and_get()));
 
-		$this->assertEquals(0, count($post->get_tags()));
+		$this->assertEmpty($post->get_tags());
 
 	}
 
+	/**
+	 * Returns null when no featured image is set
+	 * @covers StandardPost::get_thumbnail_url()
+	 */
 	function test_get_thumbnail_url_returns_null_when_no_featured_image_is_set(){
 		$post = new StandardPost(get_post($this->factory->post->create_and_get()));
-		$this->assertEquals(null, $post->get_thumbnail_url());
+		$this->assertNull($post->get_thumbnail_url());
+	}
+
+	/**
+	 * Returns instance of StandardPost
+	 * @covers StandardPost::create_from_id()
+	 */
+	function test_create_from_id_returns_StandardPost_instance(){
+
+		$post_id = $this->factory->post->create();
+
+		$post = StandardPost::create_from_id($post_id);
+
+		$this->assertInstanceOf('StandardPost', $post);
+
+	}
+
+	/**
+	 * Return null without a valid post ID
+	 * @covers StandardPost::create_from_id()
+	 */
+	function test_create_from_id_returns_null_with_invalid_post_id(){
+
+		$invalid_id = array('wrong');
+
+		$this->assertNull(StandardPost::create_from_id($invalid_id));
+
 	}
 
 }
-
 
